@@ -36,6 +36,35 @@ export function ResumeBuilder({ data, onChange }) {
   const [hobbyInput, setHobbyInput] = useState("")
   const [languageInput, setLanguageInput] = useState("")
   const [activityInput, setActivityInput] = useState("")
+  const [skillInput, setSkillInput] = useState("")
+
+  const handleAddSkill = () => {
+    if (!skillInput.trim()) return
+    const currentSkills = data.skills || []
+    if (!currentSkills.includes(skillInput.trim())) {
+       onChange({
+         ...data,
+         skills: [...currentSkills, skillInput.trim()]
+       })
+    }
+    setSkillInput("")
+  }
+
+  const handleRemoveSkill = (index) => {
+    const currentSkills = [...(data.skills || [])]
+    currentSkills.splice(index, 1)
+    onChange({
+      ...data,
+      skills: currentSkills
+    })
+  }
+
+  const handleSkillKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      handleAddSkill()
+    }
+  }
 
   const handlePersonalInfoChange = (field, value) => {
     onChange({
@@ -660,38 +689,44 @@ export function ResumeBuilder({ data, onChange }) {
                 
                 <div className="grid gap-6 p-6 border border-neutral-800 rounded-xl bg-neutral-950 shadow-sm">
                     <div className="space-y-3">
-                        <label className="text-xs font-semibold uppercase text-neutral-500 tracking-wider">Skills List (Comma separated)</label>
-                        <Textarea
-                            value={data.skills.join(", ")}
-                            onChange={(e) =>
-                            handleSkillsChange(
-                                e.target.value
-                                .split(",")
-                                .map((skill) => skill.trim())
-                                .filter(Boolean),
-                            )
-                            }
-                            placeholder="e.g. JavaScript, React, Node.js, Project Management..."
-                            className="min-h-[150px] bg-neutral-900 border-neutral-800 focus-visible:ring-blue-500 font-medium text-white"
-                        />
+                        <label className="text-xs font-semibold uppercase text-neutral-500 tracking-wider">Add Skills</label>
+                        <div className="flex gap-2">
+                           <Input 
+                             value={skillInput || ""}
+                             onChange={(e) => setSkillInput(e.target.value)}
+                             onKeyDown={handleSkillKeyDown}
+                             placeholder="Type a skill and press Enter (e.g. React)"
+                             className="bg-neutral-900 border-neutral-800 focus-visible:ring-blue-500 text-white"
+                           />
+                           <Button onClick={handleAddSkill} size="icon" className="shrink-0 bg-blue-600 hover:bg-blue-700">
+                              <PlusCircle className="h-5 w-5" />
+                           </Button>
+                        </div>
+                        <p className="text-xs text-neutral-500">Press Enter or click the + button to add.</p>
                     </div>
 
                     <div>
-                         <h4 className="text-xs font-semibold uppercase text-neutral-500 tracking-wider mb-3">Live Preview</h4>
+                         <h4 className="text-xs font-semibold uppercase text-neutral-500 tracking-wider mb-3">Your Skills</h4>
                          <div className="flex flex-wrap gap-2 p-4 bg-neutral-900/50 rounded-xl min-h-[100px] border border-neutral-800">
                         {data.skills.length > 0 ? (
                             data.skills.map((skill, index) => (
                                 <div
                                 key={index}
-                                className="bg-neutral-800 text-blue-400 border border-blue-900/30 px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-1"
+                                className="bg-neutral-800 text-blue-400 border border-blue-900/30 px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm flex items-center gap-2 group animate-in zoom-in duration-200"
                                 >
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                                 {skill}
+                                <button 
+                                  onClick={() => handleRemoveSkill(index)}
+                                  className="text-neutral-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity ml-1"
+                                >
+                                   <X className="h-3.5 w-3.5" />
+                                </button>
                                 </div>
                             ))
                         ) : (
                             <span className="text-neutral-500 text-sm italic flex items-center gap-2">
-                                <Wrench className="w-4 h-4" /> Your skills will tags appear here...
+                                <Wrench className="w-4 h-4" /> Added skills will appear here...
                             </span>
                         )}
                         </div>

@@ -30,6 +30,9 @@ export function DashboardHeader() {
           <span className="font-bold text-2xl">ResumeCraft</span>
         </Link>
         <nav className="hidden md:flex gap-6 items-center">
+          <Link href="/" className="text-sm font-medium hover:underline underline-offset-4">
+            Home
+          </Link>
           <Link href="/dashboard" className="text-sm font-medium hover:underline underline-offset-4">
             Dashboard
           </Link>
@@ -44,10 +47,10 @@ export function DashboardHeader() {
           <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                  <span className="text-sm font-medium text-blue-700 dark:text-blue-100">
-                    {user?.name?.charAt(0) || "U"}
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full focus-visible:ring-offset-2 p-0 overflow-hidden group border-2 border-transparent hover:border-blue-500 transition-all duration-300">
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md group-hover:shadow-lg transition-all">
+                  <span className="text-sm font-bold text-white tracking-wider">
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
               </Button>

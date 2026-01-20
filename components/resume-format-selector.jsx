@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-export function ResumeFormatSelector({ selectedFormat, onSelectFormat, data }) {
+export function ResumeFormatSelector({ selectedFormat, onSelectFormat, data, gridClassName }) {
   const formats = [
     {
       id: "modern",
@@ -48,16 +48,14 @@ export function ResumeFormatSelector({ selectedFormat, onSelectFormat, data }) {
   ]
 
   return (
-    <div className="space-y-6 max-h-full overflow-y-auto pr-2">
-      <div>
-        <h2 className="text-xl font-semibold text-white">Choose a Format</h2>
-        <p className="text-neutral-400">Select a layout that fits your career path.</p>
-      </div>
-
+    <div className="h-full">
       <RadioGroup
         value={selectedFormat}
         onValueChange={onSelectFormat}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className={cn(
+          "grid gap-6 pb-6",
+           gridClassName || "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+        )}
       >
         {formats.map((format) => (
           <div key={format.id} className="relative group">

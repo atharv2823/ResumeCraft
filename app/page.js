@@ -5,6 +5,7 @@ import { LandingFeatures } from "@/components/landing-features"
 import { LandingTestimonials } from "@/components/landing-testimonials"
 import { LandingFooter } from "@/components/landing-footer"
 import { LandingHeader } from "@/components/landing-header"
+import { LandingCTA } from "@/components/landing-cta"
 import { AnimatedBackground } from "@/components/animated-background"
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
         <LandingHero />
         <LandingFeatures />
         <LandingTestimonials />
+        <LandingCTA />
         <LandingFooter />
       </div>
     </div>

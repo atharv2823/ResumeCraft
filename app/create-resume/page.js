@@ -22,6 +22,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { LayoutTemplate } from "lucide-react"
 
 export default function CreateResumePage() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -229,10 +238,20 @@ export default function CreateResumePage() {
 
   const handleDownloadPdf = async () => {
     try {
+      // Get the rendered HTML content
+      const resumeElement = document.getElementById('resume-preview-content');
+      
+      if (!resumeElement) {
+        throw new Error("Resume preview element not found");
+      }
+
+      // Clone the node to manipulate it for PDF generation if needed
+      // For now, innerHTML is sufficient, but we might want style computation
+      // Sending HTML string to server
       const response = await fetch("/api/generate-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeData, format: selectedFormat }),
+        body: JSON.stringify({ html: resumeElement.outerHTML }),
       })
 
       if (!response.ok) throw new Error("Failed to generate PDF")
@@ -274,10 +293,10 @@ export default function CreateResumePage() {
       <AnimatedBackground />
       <div className="relative z-10">
         <DashboardHeader />
-        <main className="container mx-auto px-4 py-8">
-          <div className="max-w-5xl mx-auto h-full">
+        <main className="container mx-auto px-4 py-4 md:py-8 lg:h-[calc(100vh-64px)]">
+          <div className="max-w-[1600px] mx-auto h-full flex flex-col">
                <Tabs defaultValue="builder" className="w-full h-full flex flex-col">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 flex-shrink-0">
                   <h1 className="text-3xl font-bold">Create Your Resume</h1>
                   <TabsList className="grid w-[400px] grid-cols-2">
                     <TabsTrigger value="builder">Builder</TabsTrigger>
@@ -288,9 +307,60 @@ export default function CreateResumePage() {
                 <TabsContent value="builder" className="flex-1 mt-0 h-full">
                   <ResumeBuilder data={resumeData} onChange={handleDataChange} />
                 </TabsContent>
-                <TabsContent value="format" className="mt-0 h-full">
-                   <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border h-full">
-                      <ResumeFormatSelector selectedFormat={selectedFormat} onSelectFormat={setSelectedFormat} data={resumeData} />
+                <TabsContent value="format" className="mt-0 h-full flex flex-col relative">
+                   {/* Format Selection Drawer */}
+                   <div className="absolute top-4 left-4 z-20">
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button size="lg" className="shadow-xl bg-white text-gray-900 border hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                             <LayoutTemplate className="mr-2 h-5 w-5" />
+                             Change Template
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="w-[400px] sm:w-[540px] overflow-y-auto">
+                          <SheetHeader className="mb-6">
+                            <SheetTitle>Choose a Resume Template</SheetTitle>
+                            <SheetDescription>
+                              Select a layout that best fits your profession.
+                            </SheetDescription>
+                          </SheetHeader>
+                          <ResumeFormatSelector 
+                              selectedFormat={selectedFormat} 
+                              onSelectFormat={setSelectedFormat} 
+                              data={resumeData} 
+                              gridClassName="grid-cols-1 sm:grid-cols-2"
+                           />
+                        </SheetContent>
+                      </Sheet>
+                   </div>
+
+                   {/* Main Preview Area */}
+                   <div className="h-full flex flex-col bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden relative">
+                      {/* Toolbar */}
+                      <div className="bg-white dark:bg-gray-800 p-4 border-b flex justify-between items-center pl-48 sm:pl-4"> {/* Increased padding-left to avoid button overlap on mobile if needed, though button is absolute */}
+                          <div className="hidden sm:block">
+                              <h2 className="text-lg font-semibold flex items-center gap-2">
+                                <Eye className="w-5 h-5 text-blue-600" />
+                                Live Preview
+                              </h2>
+                          </div>
+                          
+                          {/* Centered on mobile usually, right on desktop */}
+                          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                              <Button onClick={handleDownloadPdf} className="bg-blue-600 hover:bg-blue-700 shadow-sm">
+                                <Download className="mr-2 h-4 w-4" /> Download PDF
+                              </Button>
+                          </div>
+                      </div>
+
+                      {/* Scrollable Preview Canvas */}
+                      <div className="flex-1 w-full h-full overflow-y-auto p-4 md:p-8 flex justify-center items-start custom-scrollbar bg-[url('/grid.svg')]">
+                         <div className="scale-[0.5] sm:scale-[0.6] md:scale-[0.7] lg:scale-[0.85] origin-top transition-transform duration-300 ease-in-out shadow-2xl my-4">
+                            <div id="resume-preview-content">
+                                <ResumePreview data={resumeData} format={selectedFormat} />
+                            </div>
+                         </div>
+                      </div>
                    </div>
                 </TabsContent>
               </Tabs>
