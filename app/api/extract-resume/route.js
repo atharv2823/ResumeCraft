@@ -1,93 +1,79 @@
-import { NextResponse } from "next/server"
-import { GoogleGenAI } from "@google/genai";
+import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+export const runtime = 'nodejs';
 
-// Initialize the Generative AI model
-const genAI = new GoogleGenAI(process.env.GOOGLE_API_KEY);
-
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const formData = await request.formData()
-    const file = formData.get("resume")
+    const pdfParse = (await import('pdf-parse')).default ?? (await import('pdf-parse'));
+
+    if (typeof pdfParse !== 'function') {
+      throw new Error('pdf-parse is not a function');
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: 'Missing GEMINI_API_KEY' },
+        { status: 500 }
+      );
+    }
+
+    const formData = await req.formData();
+    const file = formData.get('resume');
 
     if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 })
+      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // Check file type and size
-    const validTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ]
-    if (!validTypes.includes(file.type)) {
-      return NextResponse.json({ error: "Invalid file type. Please upload a PDF or Word document." }, { status: 400 })
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const pdfData = await pdfParse(buffer);
+    const pdfText = pdfData.text;
+
+    if (!pdfText?.trim()) {
+      return NextResponse.json(
+        { error: 'Could not extract text from PDF' },
+        { status: 400 }
+      );
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      // 5MB limit
-      return NextResponse.json({ error: "File too large. Maximum size is 5MB." }, { status: 400 })
-    }
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash-exp',
+    });
 
-    try {
-      // Convert file to base64 for processing
-      const buffer = await file.arrayBuffer()
-      const base64 = Buffer.from(buffer).toString("base64")
-      const mimeType = file.type
+    const prompt = `
+Return STRICT JSON only.
 
-      // Use Google Generative AI to extract resume data
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-      const result = await model.generateContent(`
-        Extract structured information from this resume file.
-        
-        The file is base64 encoded with MIME type: ${mimeType}
-        Base64 content: ${base64}
-        
-        Extract the following information and format it as a JSON object:
-        
-        {
-          "personalInfo": {
-            "name": string,
-            "email": string,
-            "phone": string,
-            "location": string,
-            "title": string,
-            "summary": string
-          },
-          "experience": [
-            {
-              "company": string,
-              "position": string,
-              "startDate": string (YYYY-MM format),
-              "endDate": string (YYYY-MM format or "Present"),
-              "description": string
-            }
-          ],
-          "education": [
-            {
-              "institution": string,
-              "degree": string,
-              "field": string,
-              "startDate": string (YYYY-MM format),
-              "endDate": string (YYYY-MM format),
-              "gpa": string
-            }
-          ],
-          "skills": [string, string, ...]
-        }
-        
-        Ensure all fields are properly extracted and formatted.
-      `);
+{
+  "personalInfo": {
+    "name": "",
+    "email": "",
+    "phone": ""
+  },
+  "skills": [],
+  "experience": [],
+  "education": []
+}
 
-      const response = await result.response;
-      const extractedData = JSON.parse(response.text());
-      return NextResponse.json(extractedData);
+Resume Text:
+"""${pdfText.slice(0, 15000)}"""
+`;
 
-    } catch (aiError) {
-      console.error("AI processing error:", aiError)
-      return NextResponse.json({ error: "Failed to process resume: " + aiError.message }, { status: 500 })
-    }
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
+
+    const jsonString = responseText
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+
+    return NextResponse.json(JSON.parse(jsonString));
+
   } catch (error) {
-    console.error("Error extracting resume data:", error)
-    return NextResponse.json({ error: "Failed to extract resume data: " + error.message }, { status: 500 })
+    console.error('Resume parsing error:', error);
+    return NextResponse.json(
+      { error: 'Failed to process resume', details: error.message },
+      { status: 500 }
+    );
   }
 }

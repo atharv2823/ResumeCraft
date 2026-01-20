@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { FileUpload } from "@/components/file-upload"
-import { Sparkles, Eye, Download, Upload } from "lucide-react"
+import { Sparkles, Eye, Download, Upload, Loader2 } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -67,6 +67,7 @@ export default function CreateResumePage() {
   const [atsScore, setAtsScore] = useState(null)
   const [selectedFormat, setSelectedFormat] = useState("modern")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -158,13 +159,15 @@ export default function CreateResumePage() {
   const handleUploadResume = async (file) => {
     const formData = new FormData()
     formData.append("resume", file)
+    setIsAnalyzing(true)
 
     try {
       console.log("Extracting resume data from:", file.name)
+      toast({
+        title: "Uploading & Parsing...",
+        description: "Please wait while we extract data from your resume.",
+      })
 
-      // Use mock data for development/testing to avoid API errors
-      // In production, you would uncomment the API call below
-      /*
       const response = await fetch("/api/extract-resume", {
         method: "POST",
         body: formData,
@@ -172,59 +175,26 @@ export default function CreateResumePage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to extract resume data")
+        throw new Error(errorData.details || errorData.error || "Failed to extract resume data")
       }
 
       const extractedData = await response.json()
-      */
-
-      // Mock data for development/testing
-      const extractedData = {
-        personalInfo: {
-          name: "John Doe",
-          email: "john.doe@example.com",
-          phone: "(123) 456-7890",
-          location: "New York, NY",
-          title: "Software Engineer",
-          summary: "Experienced software engineer with expertise in web development and cloud technologies.",
-        },
-        experience: [
-          {
-            company: "Tech Solutions Inc.",
-            position: "Senior Software Engineer",
-            startDate: "2020-01",
-            endDate: "Present",
-            description:
-              "Developed and maintained web applications using React and Node.js. Implemented CI/CD pipelines and improved application performance by 30%.",
-          },
-          {
-            company: "Digital Innovations",
-            position: "Software Developer",
-            startDate: "2017-06",
-            endDate: "2019-12",
-            description:
-              "Built responsive web applications and RESTful APIs. Collaborated with cross-functional teams to deliver high-quality software products.",
-          },
-        ],
-        education: [
-          {
-            institution: "University of Technology",
-            degree: "Bachelor of Science",
-            field: "Computer Science",
-            startDate: "2013-09",
-            endDate: "2017-05",
-            gpa: "3.8",
-          },
-        ],
-        skills: ["JavaScript", "React", "Node.js", "Python", "AWS", "Docker", "Git", "Agile", "REST APIs"],
+      
+      // Merge with existing structure to ensure all fields exist
+      const mergedData = {
+          ...resumeData,
+          ...extractedData,
+          personalInfo: { ...resumeData.personalInfo, ...extractedData.personalInfo }
       }
 
-      setResumeData(extractedData)
-      analyzeResume(extractedData)
+      setResumeData(mergedData)
+      
+      // Optional: Auto-analyze after extraction
+      // analyzeResume(mergedData) 
 
       toast({
         title: "Resume Extracted",
-        description: "Your resume data has been successfully extracted.",
+        description: "Your resume data has been successfully imported. Please review and edit.",
       })
     } catch (error) {
       console.error("Error extracting resume:", error)
@@ -233,6 +203,8 @@ export default function CreateResumePage() {
         description: error.message || "Could not extract data from your resume. Please try again.",
         variant: "destructive",
       })
+    } finally {
+        setIsAnalyzing(false)
     }
   }
 
