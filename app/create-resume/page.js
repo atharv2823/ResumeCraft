@@ -149,15 +149,26 @@ export default function CreateResumePage() {
         experience: (extractedData.experience || []).map((exp) => {
           if (exp.company && exp.role) {
             // Parse duration like "Jan 2025 – June 2025" to startDate and endDate
-            let startDate = "", endDate = "";
+            let startDate = "",
+              endDate = "";
             if (exp.duration) {
-              const parts = exp.duration.split('–').map(p => p.trim());
+              const parts = exp.duration.split("–").map((p) => p.trim());
               if (parts[0]) {
                 const startMatch = parts[0].match(/(\w+)\s+(\d+)/);
                 if (startMatch) {
                   const monthMap = {
-                    'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                    'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                    Jan: "01",
+                    Feb: "02",
+                    Mar: "03",
+                    Apr: "04",
+                    May: "05",
+                    Jun: "06",
+                    Jul: "07",
+                    Aug: "08",
+                    Sep: "09",
+                    Oct: "10",
+                    Nov: "11",
+                    Dec: "12",
                   };
                   const month = monthMap[startMatch[1]];
                   const year = startMatch[2];
@@ -168,8 +179,18 @@ export default function CreateResumePage() {
                 const endMatch = parts[1].match(/(\w+)\s+(\d+)/);
                 if (endMatch) {
                   const monthMap = {
-                    'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                    'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                    Jan: "01",
+                    Feb: "02",
+                    Mar: "03",
+                    Apr: "04",
+                    May: "05",
+                    Jun: "06",
+                    Jul: "07",
+                    Aug: "08",
+                    Sep: "09",
+                    Oct: "10",
+                    Nov: "11",
+                    Dec: "12",
                   };
                   const month = monthMap[endMatch[1]];
                   const year = endMatch[2];
@@ -182,7 +203,7 @@ export default function CreateResumePage() {
               position: exp.role,
               startDate: startDate,
               endDate: endDate,
-              description: exp.responsibilities?.join('. ') || ""
+              description: exp.responsibilities?.join(". ") || "",
             };
           } else if (exp.project) {
             return {
@@ -190,7 +211,7 @@ export default function CreateResumePage() {
               position: "",
               startDate: "",
               endDate: "",
-              description: exp.description || ""
+              description: exp.description || "",
             };
           }
           return {
@@ -207,7 +228,7 @@ export default function CreateResumePage() {
           field: "", // Could extract if available
           startDate: "", // Not provided in API
           endDate: edu.year || "",
-          gpa: edu.score || ""
+          gpa: edu.score || "",
         })),
       };
 
