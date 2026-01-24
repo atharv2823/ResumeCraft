@@ -1,48 +1,50 @@
-import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-export const runtime = 'nodejs';
+import { NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+export const runtime = "nodejs";
 
 export async function POST(req) {
   try {
-    const pdfParse = (await import('pdf-parse')).default ?? (await import('pdf-parse'));
-
-    if (typeof pdfParse !== 'function') {
-      throw new Error('pdf-parse is not a function');
-    }
-
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
-        { error: 'Missing GEMINI_API_KEY' },
-        { status: 500 }
+        { error: "Missing GEMINI_API_KEY" },
+        { status: 500 },
       );
     }
 
     const formData = await req.formData();
-    const file = formData.get('resume');
+    const file = formData.get("resume");
 
     if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const arrayBuffer = await file.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
 
-    const pdfData = await pdfParse(buffer);
-    const pdfText = pdfData.text;
+    // Use pdfjs-dist for text extraction
+    const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
+    let pdfText = "";
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      pdfText += content.items.map((item) => item.str).join(" ") + "\n";
+    }
 
     if (!pdfText?.trim()) {
       return NextResponse.json(
-        { error: 'Could not extract text from PDF' },
-        { status: 400 }
+        { error: "Could not extract text from PDF" },
+        { status: 400 },
       );
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp',
+      model: "gemini-3-flash-preview",
     });
 
     const prompt = `
-Return STRICT JSON only.
+Extract information from the resume text and return ONLY a valid JSON object with this exact structure. Do not include any markdown, code blocks, or extra text.
 
 {
   "personalInfo": {
@@ -51,8 +53,22 @@ Return STRICT JSON only.
     "phone": ""
   },
   "skills": [],
-  "experience": [],
-  "education": []
+  "experience": [
+    {
+      "company": "",
+      "role": "",
+      "duration": "",
+      "responsibilities": []
+    }
+  ],
+  "education": [
+    {
+      "degree": "",
+      "institution": "",
+      "year": "",
+      "score": ""
+    }
+  ]
 }
 
 Resume Text:
@@ -63,17 +79,16 @@ Resume Text:
     const responseText = result.response.text();
 
     const jsonString = responseText
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
       .trim();
 
     return NextResponse.json(JSON.parse(jsonString));
-
   } catch (error) {
-    console.error('Resume parsing error:', error);
+    console.error("Resume parsing error:", error);
     return NextResponse.json(
-      { error: 'Failed to process resume', details: error.message },
-      { status: 500 }
+      { error: "Failed to process resume", details: error.message },
+      { status: 500 },
     );
   }
 }

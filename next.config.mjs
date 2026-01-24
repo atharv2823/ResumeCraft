@@ -9,9 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ["pdf-parse", "puppeteer"],
-  },
-}
+  serverExternalPackages: ["pdfjs-dist", "puppeteer"],
+};
 
-export default nextConfig
+export default nextConfig;
