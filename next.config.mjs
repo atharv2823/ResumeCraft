@@ -6,7 +6,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  serverExternalPackages: ["pdfjs-dist", "puppeteer"],
+  serverExternalPackages: ["pdfjs-dist", "puppeteer", "@sparticuz/chromium"],
 };
 
 export default nextConfig;

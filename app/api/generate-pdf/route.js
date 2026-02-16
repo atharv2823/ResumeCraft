@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
 
 export async function POST(req) {
   let browser;
@@ -12,27 +10,35 @@ export async function POST(req) {
       return NextResponse.json({ error: 'HTML content is required' }, { status: 400 });
     }
 
-    // Detect if running on Vercel
-    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+    // Dynamically import puppeteer to avoid bundling issues
+    let puppeteer;
+    let launchOptions;
 
-    // Configure launch options based on environment
-    const launchOptions = isVercel
-      ? {
-          executablePath: await chromium.executablePath(),
-          headless: chromium.headless,
-          args: chromium.args,
-        }
-      : {
-          // For local Windows development - try common Chrome/Edge paths
-          executablePath:
-            process.env.CHROME_PATH || 
-            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-          headless: true,
-          args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        };
+    // Detect if running on Vercel or production
+    const isProduction = process.env.VERCEL === '1' || process.env.VERCEL_ENV || process.env.NODE_ENV === 'production';
+
+    if (isProduction) {
+      // For production/Vercel - use chromium
+      const chromium = await import('@sparticuz/chromium');
+      puppeteer = await import('puppeteer-core');
+      
+      launchOptions = {
+        executablePath: await chromium.default.executablePath(),
+        headless: chromium.default.headless,
+        args: chromium.default.args,
+      };
+    } else {
+      // For local development - use full puppeteer with bundled Chromium
+      puppeteer = await import('puppeteer');
+      
+      launchOptions = {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      };
+    }
 
     // Launch puppeteer
-    browser = await puppeteer.launch(launchOptions);
+    browser = await puppeteer.default.launch(launchOptions);
 
     const page = await browser.newPage();
 
