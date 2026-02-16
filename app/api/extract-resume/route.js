@@ -50,7 +50,11 @@ Extract information from the resume text and return ONLY a valid JSON object wit
   "personalInfo": {
     "name": "",
     "email": "",
-    "phone": ""
+    "phone": "",
+    "linkedin": "",
+    "github": "",
+    "portfolio": "",
+    "photo": ""
   },
   "skills": [],
   "experience": [
@@ -67,6 +71,29 @@ Extract information from the resume text and return ONLY a valid JSON object wit
       "institution": "",
       "year": "",
       "score": ""
+    }
+  ],
+  "projects": [
+    {
+      "title": "",
+      "description": "",
+      "technologies": [],
+      "link": "",
+      "duration": ""
+    }
+  ],
+  "languages": [
+    {
+      "name": "",
+      "proficiency": ""
+    }
+  ],
+  "hobbies": [],
+  "extraCurricular": [
+    {
+      "title": "",
+      "description": "",
+      "duration": ""
     }
   ]
 }

@@ -1,19 +1,38 @@
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 
 export async function POST(req) {
+  let browser;
+  
   try {
-    const { html } = await req.json();
+    const { html, fileName = 'resume.pdf' } = await req.json();
 
     if (!html) {
       return NextResponse.json({ error: 'HTML content is required' }, { status: 400 });
     }
 
+    // Detect if running on Vercel
+    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV;
+
+    // Configure launch options based on environment
+    const launchOptions = isVercel
+      ? {
+          executablePath: await chromium.executablePath(),
+          headless: chromium.headless,
+          args: chromium.args,
+        }
+      : {
+          // For local Windows development - try common Chrome/Edge paths
+          executablePath:
+            process.env.CHROME_PATH || 
+            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+          headless: true,
+          args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        };
+
     // Launch puppeteer
-    const browser = await puppeteer.launch({
-      headless: "new",
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+    browser = await puppeteer.launch(launchOptions);
 
     const page = await browser.newPage();
 
@@ -90,20 +109,19 @@ export async function POST(req) {
       format: 'A4',
       printBackground: true,
       margin: {
-        top: '0px',
-        right: '0px',
-        bottom: '0px',
-        left: '0px',
+        top: '20px',
+        right: '20px',
+        bottom: '20px',
+        left: '20px',
       },
     });
-
-    await browser.close();
 
     // Create response with PDF
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="resume.pdf"',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Length': pdfBuffer.length.toString(),
       },
     });
 
@@ -113,5 +131,9 @@ export async function POST(req) {
       { error: 'Failed to generate PDF', details: error.message },
       { status: 500 }
     );
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 }

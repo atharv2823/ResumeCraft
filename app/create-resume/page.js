@@ -222,14 +222,81 @@ export default function CreateResumePage() {
             description: "",
           };
         }),
-        education: (extractedData.education || []).map((edu) => ({
-          degree: edu.degree || "",
-          institution: edu.institution || "",
-          field: "", // Could extract if available
-          startDate: "", // Not provided in API
-          endDate: edu.year || "",
-          gpa: edu.score || "",
+        education: (extractedData.education || []).map((edu) => {
+          let startDate = "";
+          let endDate = "";
+          
+          // Parse year field like "June 2023 – June 2025" into startDate and endDate
+          if (edu.year) {
+            const parts = edu.year.split(/–|—|-/).map(p => p.trim());
+            
+            const monthMap = {
+              January: "01", Jan: "01",
+              February: "02", Feb: "02",
+              March: "03", Mar: "03",
+              April: "04", Apr: "04",
+              May: "05",
+              June: "06", Jun: "06",
+              July: "07", Jul: "07",
+              August: "08", Aug: "08",
+              September: "09", Sep: "09",
+              October: "10", Oct: "10",
+              November: "11", Nov: "11",
+              December: "12", Dec: "12",
+            };
+            
+            // Parse start date
+            if (parts[0]) {
+              const startMatch = parts[0].match(/(\w+)\s+(\d{4})/);
+              if (startMatch) {
+                const month = monthMap[startMatch[1]];
+                const year = startMatch[2];
+                if (month && year) startDate = `${year}-${month}`;
+              }
+            }
+            
+            // Parse end date
+            if (parts[1]) {
+              const endMatch = parts[1].match(/(\w+)\s+(\d{4})/);
+              if (endMatch) {
+                const month = monthMap[endMatch[1]];
+                const year = endMatch[2];
+                if (month && year) endDate = `${year}-${month}`;
+              }
+            }
+          }
+          
+          return {
+            degree: edu.degree || "",
+            institution: edu.institution || "",
+            field: "", // Could extract if available
+            startDate: startDate,
+            endDate: endDate,
+            gpa: edu.score || "",
+          };
+        }),
+        projects: (extractedData.projects || []).map((proj) => ({
+          title: proj.title || "",
+          description: proj.description || "",
+          technologies: proj.technologies || [],
+          link: proj.link || "",
+          duration: proj.duration || "",
         })),
+        // Convert languages from {name, proficiency} to "name (proficiency)" strings
+        languages: (extractedData.languages || []).map((lang) => 
+          lang.proficiency 
+            ? `${lang.name} (${lang.proficiency})`
+            : lang.name
+        ),
+        // Hobbies are already strings
+        hobbies: extractedData.hobbies || [],
+        // Convert extraCurricular from objects to strings
+        extraCurricular: (extractedData.extraCurricular || []).map((activity) => {
+          const parts = [activity.title];
+          if (activity.duration) parts.push(`(${activity.duration})`);
+          if (activity.description) parts.push(`- ${activity.description}`);
+          return parts.join(" ");
+        }),
       };
 
       // Merge with existing structure
