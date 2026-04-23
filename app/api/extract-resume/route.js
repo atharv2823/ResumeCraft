@@ -43,8 +43,6 @@ export async function POST(req) {
     const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
     
     // Disable worker for Vercel environment compatibility
-    pdfjsLib.GlobalWorkerOptions.workerSrc = false;
-
     const pdf = await pdfjsLib.getDocument({
       data: uint8Array,
       useWorkerFetch: false,
