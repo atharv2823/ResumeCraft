@@ -21,9 +21,31 @@ export async function POST(req) {
     const arrayBuffer = await file.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
 
+    // Polyfill for browser globals missing in Node environment but required by pdfjs-dist 4+
+    if (typeof global.DOMMatrix === "undefined") {
+      global.DOMMatrix = class DOMMatrix {
+        constructor(init) {
+          this.a = 1; this.b = 0; this.c = 0; this.d = 1; this.e = 0; this.f = 0;
+          if (Array.isArray(init) && init.length === 6) {
+            this.a = init[0]; this.b = init[1]; this.c = init[2]; this.d = init[3]; this.e = init[4]; this.f = init[5];
+          }
+        }
+      };
+    }
+
+    if (typeof global.Path2D === "undefined") {
+      global.Path2D = class Path2D {
+        constructor() {}
+      };
+    }
+
     // Use pdfjs-dist for text extraction
     const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
+    const pdf = await pdfjsLib.getDocument({
+      data: uint8Array,
+      useWorkerFetch: false,
+      isEvalSupported: false,
+    }).promise;
     let pdfText = "";
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
@@ -47,6 +69,7 @@ export async function POST(req) {
 Extract information from the resume text and return ONLY a valid JSON object with this exact structure. Do not include any markdown, code blocks, or extra text.
 
 {
+  "detectedField": "Briefly identify the primary professional field or domain (e.g., Full Stack Development, Human Resources, Data Analysis)",
   "personalInfo": {
     "name": "",
     "email": "",

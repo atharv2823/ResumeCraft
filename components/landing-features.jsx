@@ -37,6 +37,14 @@ export function LandingFeatures() {
       ),
       color: "bg-orange-100 dark:bg-orange-900/20"
     },
+    {
+      title: "AI Mock Test",
+      description: "Generate personalized technical mock tests based on your resume skills to prepare for interviews.",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pink-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+      ),
+      color: "bg-pink-100 dark:bg-pink-900/20"
+    },
   ]
 
   return (
@@ -53,7 +61,7 @@ export function LandingFeatures() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={index}

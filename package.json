@@ -54,7 +54,6 @@
     "lucide-react": "^0.454.0",
     "next": "^16.2.0-canary.6",
     "next-themes": "latest",
-    "pdf-parse": "^2.4.5",
     "pdfjs-dist": "^5.4.530",
     "puppeteer": "^24.9.0",
     "react": "^19",

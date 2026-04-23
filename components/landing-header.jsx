@@ -34,6 +34,9 @@ export function LandingHeader() {
       <Link href="#testimonials" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
         Testimonials
       </Link>
+      <Link href="/mock-test" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
+        Mock Test
+      </Link>
     </>
   )
 

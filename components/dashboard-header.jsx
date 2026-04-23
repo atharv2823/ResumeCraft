@@ -42,6 +42,9 @@ export function DashboardHeader() {
           <Link href="/scan-resume" className="text-sm font-medium hover:underline underline-offset-4">
             Scan Resume
           </Link>
+          <Link href="/mock-test" className="text-sm font-medium hover:underline underline-offset-4">
+            Mock Test
+          </Link>
         </nav>
         <div className="flex items-center gap-4">
           <ModeToggle />
