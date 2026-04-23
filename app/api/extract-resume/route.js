@@ -41,10 +41,15 @@ export async function POST(req) {
 
     // Use pdfjs-dist for text extraction
     const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    
+    // Disable worker for Vercel environment compatibility
+    pdfjsLib.GlobalWorkerOptions.workerSrc = false;
+
     const pdf = await pdfjsLib.getDocument({
       data: uint8Array,
       useWorkerFetch: false,
       isEvalSupported: false,
+      disableWorker: true,
     }).promise;
     let pdfText = "";
     for (let i = 1; i <= pdf.numPages; i++) {
