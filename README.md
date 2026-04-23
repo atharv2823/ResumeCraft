@@ -5,7 +5,7 @@ ResumeCraft is a modern, AI-powered resume builder and analyzer that helps users
 ## 🌟 Features
 
 ### Resume Creation   
-- AI-powered resume builder  
+- AI-powered resume builder     
 - Real-time ATS score analysis
 - Multiple professional templates
 - Content extraction from existing resumes  
