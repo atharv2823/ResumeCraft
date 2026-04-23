@@ -69,11 +69,6 @@ export default function CreateResumePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isLoading, isAuthenticated, router]);
 
   const handleDataChange = (newData) => {
     setResumeData(newData);
@@ -376,17 +371,6 @@ export default function CreateResumePage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className="relative min-h-screen">

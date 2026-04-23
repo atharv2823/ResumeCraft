@@ -41,10 +41,10 @@ export function LandingCTA() {
              <Button 
                variant="outline" 
                size="lg" 
-               onClick={() => router.push("/signup")}
+               onClick={() => router.push("/mock-test")}
                className="bg-transparent border-white text-white hover:bg-white/10 h-14 px-8 text-lg font-semibold"
              >
-               Sign Up Free
+               Try AI Mock Test
              </Button>
           </div>
           <p className="text-sm text-blue-200 mt-6">

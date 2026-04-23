@@ -50,10 +50,10 @@ export function LandingHero() {
               <Button 
                 variant="outline" 
                 size="lg" 
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/mock-test")}
                 className="h-12 px-8 rounded-full border-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all text-base"
               >
-                View Dashboard
+                Try AI Mock Test
               </Button>
           </motion.div>
         </div>

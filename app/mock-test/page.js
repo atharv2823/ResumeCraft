@@ -40,12 +40,6 @@ export default function MockTestPage() {
   const [score, setScore] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isLoading, isAuthenticated, router]);
-
   const handleResumeUpload = async (file) => {
     const formData = new FormData();
     formData.append("resume", file);
@@ -151,9 +145,6 @@ export default function MockTestPage() {
     setScore(0);
   };
 
-  if (isLoading) return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  if (!isAuthenticated) return null;
-
   return (
     <div className="relative min-h-screen">
       <AnimatedBackground />
@@ -170,7 +161,7 @@ export default function MockTestPage() {
                 className="space-y-6"
               >
                 <div className="text-center space-y-1">
-                  <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">AI Mock Test</h1>
+                  <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">ResumeCraft  Mock Test</h1>
                   <p className="text-muted-foreground text-sm sm:text-lg">
                     Upload your resume to start a personalized test.
                   </p>

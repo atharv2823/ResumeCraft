@@ -28,14 +28,17 @@ export function LandingHeader() {
       <Link href="/" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
         Home
       </Link>
+      <Link href="/create-resume" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
+        Create Resume
+      </Link>
+      <Link href="/scan-resume" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
+        ATS Scan
+      </Link>
       <Link href="#features" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
         Features
       </Link>
       <Link href="#testimonials" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
         Testimonials
-      </Link>
-      <Link href="/mock-test" className={`text-sm font-medium hover:text-blue-600 transition-colors ${className}`}>
-        Mock Test
       </Link>
     </>
   )
@@ -50,8 +53,8 @@ export function LandingHeader() {
     >
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center space-x-2 group">
-           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform">
-             RC
+           <div className="w-8 h-8 flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform">
+             <img src="Logo-2.png" alt="logo" className="w-22 h-22 rounded-full" /> 
            </div>
           <span className="font-bold text-xl tracking-tight">ResumeCraft</span>
         </Link>
@@ -80,20 +83,12 @@ export function LandingHeader() {
                    </Link>
                    <NavLinks className="text-lg py-2 border-b dark:border-gray-800" />
                    <div className="flex flex-col gap-3 mt-4">
-                      {isAuthenticated ? (
-                        <Button onClick={() => router.push("/dashboard")} className="w-full">
-                          Go to Dashboard
-                        </Button>
-                      ) : (
-                        <>
-                          <Button variant="outline" onClick={() => router.push("/login")} className="w-full">
-                            Login
-                          </Button>
-                          <Button onClick={() => router.push("/signup")} className="w-full bg-blue-600 hover:bg-blue-700">
-                            Sign Up
-                          </Button>
-                        </>
-                      )}
+                      <Button variant="outline" onClick={() => router.push("/mock-test")} className="w-full">
+                        AI Mock Test
+                      </Button>
+                      <Button onClick={() => router.push("/create-resume")} className="w-full bg-blue-600 hover:bg-blue-700">
+                        Build Resume
+                      </Button>
                    </div>
                 </div>
               </SheetContent>
@@ -101,20 +96,12 @@ export function LandingHeader() {
           </div>
 
           <div className="hidden md:flex gap-3">
-             {isAuthenticated ? (
-              <Button onClick={() => router.push("/dashboard")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all">
-                Dashboard
-              </Button>
-            ) : (
-              <>
-                <Button variant="ghost" onClick={() => router.push("/login")} className="hover:bg-gray-100 dark:hover:bg-gray-800">
-                  Login
-                </Button>
-                <Button onClick={() => router.push("/signup")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all">
-                  Get Started
-                </Button>
-              </>
-            )}
+            <Button variant="ghost" onClick={() => router.push("/mock-test")} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+              Mock Test
+            </Button>
+            <Button onClick={() => router.push("/create-resume")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all">
+              Build Resume
+            </Button>
           </div>
         </div>
       </div>

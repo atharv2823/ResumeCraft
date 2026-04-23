@@ -20,11 +20,6 @@ export default function ScanResumePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResults, setAnalysisResults] = useState(null)
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login")
-    }
-  }, [isLoading, isAuthenticated, router])
 
   const handleFileChange = (e) => {
     if (e.target.files?.[0]) {
@@ -49,9 +44,6 @@ export default function ScanResumePage() {
     try {
       console.log("Scanning resume:", file.name)
 
-      // Use mock data for development/testing to avoid API errors
-      // In production, you would uncomment the API call below
-      /*
       const response = await fetch("/api/scan-resume", {
         method: "POST",
         body: formData,
@@ -63,53 +55,6 @@ export default function ScanResumePage() {
       }
 
       const results = await response.json()
-      */
-
-      // Mock data for development/testing
-      const results = {
-        overall: 78,
-        categories: [
-          { name: "Content Quality", score: 82 },
-          { name: "Keyword Optimization", score: 65 },
-          { name: "Formatting", score: 90 },
-          { name: "Experience Description", score: 75 },
-        ],
-        suggestions: [
-          "Add more quantifiable achievements to your work experience.",
-          "Include industry-specific keywords relevant to your target role.",
-          "Ensure your resume has a clear and consistent formatting structure.",
-          "Elaborate on technical skills with specific examples of implementation.",
-          "Consider adding a brief professional summary at the top of your resume.",
-        ],
-        keywords: [
-          "project management",
-          "leadership",
-          "communication",
-          "teamwork",
-          "problem-solving",
-          "JavaScript",
-          "React",
-        ],
-        missingKeywords: ["agile", "scrum", "data analysis", "strategic planning"],
-        contentAnalysis: [
-          {
-            section: "Summary",
-            analysis: "Your summary is concise but could be more impactful with specific achievements.",
-            score: 70,
-          },
-          {
-            section: "Experience",
-            analysis: "Work experience is well-structured but lacks quantifiable results.",
-            score: 75,
-          },
-          { section: "Education", analysis: "Education section is complete and well-formatted.", score: 90 },
-          {
-            section: "Skills",
-            analysis: "Skills section could benefit from more industry-specific keywords.",
-            score: 65,
-          },
-        ],
-      }
 
       setAnalysisResults(results)
     } catch (error) {
@@ -124,13 +69,6 @@ export default function ScanResumePage() {
     }
   }
 
-  if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
 
   return (
     <div className="relative min-h-screen">
