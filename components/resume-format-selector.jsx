@@ -53,8 +53,8 @@ export function ResumeFormatSelector({ selectedFormat, onSelectFormat, data, gri
         value={selectedFormat}
         onValueChange={onSelectFormat}
         className={cn(
-          "grid gap-6 pb-6",
-           gridClassName || "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          "grid gap-4 sm:gap-6 pb-6",
+           gridClassName || "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
         )}
       >
         {formats.map((format) => (
@@ -65,29 +65,29 @@ export function ResumeFormatSelector({ selectedFormat, onSelectFormat, data, gri
                 className={cn(
                   "relative overflow-hidden rounded-xl border-2 transition-all duration-300 aspect-[210/297] bg-white shadow-sm",
                   selectedFormat === format.id 
-                    ? "border-blue-500 ring-2 ring-blue-500/20 shadow-lg scale-[1.02]" 
-                    : "border-neutral-800 hover:border-neutral-700 hover:shadow-md opacity-80 hover:opacity-100"
+                    ? "border-blue-600 ring-2 ring-blue-600/20 shadow-lg scale-[1.02]" 
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md"
                 )}
               >
                  <ScaledResumePreview component={format.component} data={data} />
                  
                  {/* Selection Overlay */}
                  {selectedFormat === format.id && (
-                    <div className="absolute inset-0 bg-blue-900/10 z-10 flex items-center justify-center">
-                        <div className="bg-blue-600 text-white p-2 rounded-full shadow-lg">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <div className="absolute inset-0 bg-blue-600/10 z-10 flex items-center justify-center">
+                        <div className="bg-blue-600 text-white p-1.5 sm:p-2 rounded-full shadow-lg transform transition-transform scale-90 sm:scale-100">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 sm:w-5 sm:h-5"><polyline points="20 6 9 17 4 12"/></svg>
                         </div>
                     </div>
                  )}
               </div>
               
-              <div className="mt-3">
+              <div className="mt-2 sm:mt-3">
                  <div className="flex justify-between items-center">
-                    <span className={cn("font-medium transition-colors", selectedFormat === format.id ? "text-blue-400" : "text-neutral-300")}>
+                    <span className={cn("text-sm sm:text-base font-medium transition-colors", selectedFormat === format.id ? "text-blue-600 dark:text-blue-400" : "text-gray-900 dark:text-gray-100")}>
                         {format.name}
                     </span>
                  </div>
-                 <p className="text-xs text-neutral-500 mt-1 line-clamp-2">{format.description}</p>
+                 <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1 line-clamp-2 leading-snug">{format.description}</p>
               </div>
             </Label>
           </div>

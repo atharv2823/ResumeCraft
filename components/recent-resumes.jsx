@@ -48,12 +48,12 @@ export function RecentResumes() {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-semibold mb-4">Recent Resumes</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4">Recent Resumes</h2>
         <div className="space-y-4">
           {[1, 2].map((i) => (
             <div key={i} className="animate-pulse">
-              <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+              <div className="h-24 sm:h-16 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
             </div>
           ))}
         </div>
@@ -62,24 +62,24 @@ export function RecentResumes() {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-semibold mb-4">Recent Resumes</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+      <h2 className="text-xl sm:text-2xl font-semibold mb-4">Recent Resumes</h2>
       {resumes.length > 0 ? (
         <div className="space-y-4">
           {resumes.map((resume) => (
             <Card key={resume.id} className="overflow-hidden">
-              <div className="flex items-center justify-between p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 sm:gap-0">
                 <div>
-                  <h3 className="font-medium">{resume.title}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="font-medium text-base">{resume.title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-0">
                     Last updated {formatDistanceToNow(resume.lastUpdated, { addSuffix: true })}
                   </p>
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-between w-full sm:w-auto border-t border-gray-100 dark:border-gray-800 sm:border-0 pt-3 sm:pt-0 sm:space-x-4">
                   <div className="flex items-center">
-                    <div className="text-sm font-medium mr-2">ATS Score:</div>
+                    <div className="text-xs sm:text-sm font-medium mr-2">ATS Score:</div>
                     <div
-                      className={`text-sm font-bold px-2 py-1 rounded ${
+                      className={`text-xs sm:text-sm font-bold px-2 py-0.5 sm:py-1 rounded ${
                         resume.atsScore >= 90
                           ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
                           : resume.atsScore >= 70
@@ -90,7 +90,7 @@ export function RecentResumes() {
                       {resume.atsScore}%
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => router.push(`/edit-resume/${resume.id}`)}>
+                  <Button variant="outline" size="sm" className="sm:border-transparent sm:bg-transparent" onClick={() => router.push(`/edit-resume/${resume.id}`)}>
                     Edit
                   </Button>
                 </div>

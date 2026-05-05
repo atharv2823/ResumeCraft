@@ -383,9 +383,9 @@ export default function CreateResumePage() {
               defaultValue="builder"
               className="w-full h-full flex flex-col"
             >
-              <div className="flex items-center justify-between mb-4 flex-shrink-0">
-                <h1 className="text-3xl font-bold">Create Your Resume</h1>
-                <TabsList className="grid w-[400px] grid-cols-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between mb-4 flex-shrink-0 gap-4 sm:gap-0">
+                <h1 className="text-2xl sm:text-3xl font-bold w-full sm:w-auto text-left">Create Your Resume</h1>
+                <TabsList className="grid w-full sm:w-[400px] grid-cols-2">
                   <TabsTrigger value="builder">Builder</TabsTrigger>
                   <TabsTrigger value="format">Format</TabsTrigger>
                 </TabsList>
@@ -398,55 +398,53 @@ export default function CreateResumePage() {
                 value="format"
                 className="mt-0 h-full flex flex-col relative"
               >
-                {/* Format Selection Drawer */}
-                <div className="absolute top-4 left-4 z-20">
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button
-                        size="lg"
-                        className="shadow-xl bg-white text-gray-900 border hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-                      >
-                        <LayoutTemplate className="mr-2 h-5 w-5" />
-                        Change Template
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent
-                      side="left"
-                      className="w-[400px] sm:w-[540px] overflow-y-auto"
-                    >
-                      <SheetHeader className="mb-6">
-                        <SheetTitle>Choose a Resume Template</SheetTitle>
-                        <SheetDescription>
-                          Select a layout that best fits your profession.
-                        </SheetDescription>
-                      </SheetHeader>
-                      <ResumeFormatSelector
-                        selectedFormat={selectedFormat}
-                        onSelectFormat={setSelectedFormat}
-                        data={resumeData}
-                        gridClassName="grid-cols-1 sm:grid-cols-2"
-                      />
-                    </SheetContent>
-                  </Sheet>
-                </div>
-
                 {/* Main Preview Area */}
                 <div className="h-full flex flex-col bg-gray-100 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden relative">
                   {/* Toolbar */}
-                  <div className="bg-white dark:bg-gray-800 p-4 border-b flex justify-between items-center pl-48 sm:pl-4">
-                    {" "}
-                    {/* Increased padding-left to avoid button overlap on mobile if needed, though button is absolute */}
-                    <div className="hidden sm:block">
+                  <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 relative">
+                    <div className="flex items-center justify-between w-full sm:w-auto sm:flex-1">
+                      {/* Format Selection Drawer */}
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full sm:w-auto shadow-sm bg-white text-gray-900 border hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                          >
+                            <LayoutTemplate className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                            Change Template
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent
+                          side="left"
+                          className="w-[100vw] sm:w-[540px] p-4 sm:p-6 overflow-y-auto"
+                        >
+                          <SheetHeader className="mb-6 mt-4 sm:mt-0">
+                            <SheetTitle>Choose a Resume Template</SheetTitle>
+                            <SheetDescription>
+                              Select a layout that best fits your profession.
+                            </SheetDescription>
+                          </SheetHeader>
+                          <ResumeFormatSelector
+                            selectedFormat={selectedFormat}
+                            onSelectFormat={setSelectedFormat}
+                            data={resumeData}
+                            gridClassName="grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-6"
+                          />
+                        </SheetContent>
+                      </Sheet>
+                    </div>
+
+                    <div className="hidden sm:flex items-center justify-center sm:flex-1">
                       <h2 className="text-lg font-semibold flex items-center gap-2">
                         <Eye className="w-5 h-5 text-blue-600" />
                         Live Preview
                       </h2>
                     </div>
-                    {/* Centered on mobile usually, right on desktop */}
-                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+
+                    <div className="flex items-center w-full sm:w-auto sm:flex-1 justify-end">
                       <Button
                         onClick={handleDownloadPdf}
-                        className="bg-blue-600 hover:bg-blue-700 shadow-sm"
+                        className="bg-blue-600 hover:bg-blue-700 shadow-sm w-full sm:w-auto"
                       >
                         <Download className="mr-2 h-4 w-4" /> Download PDF
                       </Button>
@@ -455,7 +453,7 @@ export default function CreateResumePage() {
 
                   {/* Scrollable Preview Canvas */}
                   <div className="flex-1 w-full h-full overflow-y-auto p-4 md:p-8 flex justify-center items-start custom-scrollbar bg-[url('/grid.svg')]">
-                    <div className="scale-[0.5] sm:scale-[0.6] md:scale-[0.7] lg:scale-[0.85] origin-top transition-transform duration-300 ease-in-out shadow-2xl my-4">
+                    <div className="scale-[0.35] min-[375px]:scale-[0.4] min-[425px]:scale-[0.45] sm:scale-[0.6] md:scale-[0.7] lg:scale-[0.85] origin-top transition-transform duration-300 ease-in-out shadow-2xl my-4">
                       <div id="resume-preview-content">
                         <ResumePreview
                           data={resumeData}
@@ -471,7 +469,7 @@ export default function CreateResumePage() {
         </main>
 
         {/* Floating Action Buttons */}
-        <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+        <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 flex flex-col gap-3 sm:gap-4 z-50">
           {/* Upload Button */}
           <Dialog
             open={isUploadDialogOpen}
@@ -480,12 +478,12 @@ export default function CreateResumePage() {
             <DialogTrigger asChild>
               <Button
                 size="lg"
-                className="h-14 w-14 rounded-full shadow-lg bg-green-600 text-white hover:bg-green-700 p-0 animate-in zoom-in duration-300 delay-200"
+                className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-green-600 text-white hover:bg-green-700 p-0 animate-in zoom-in duration-300 delay-200"
               >
-                <Upload className="h-6 w-6" />
+                <Upload className="h-5 w-5 sm:h-6 sm:w-6" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="w-[95vw] max-w-md sm:w-full rounded-xl">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-xl">
                   <Upload className="h-5 w-5" />
@@ -516,16 +514,16 @@ export default function CreateResumePage() {
           </Dialog>
 
           {/* Preview Button */}
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button
                 size="lg"
-                className="h-14 w-14 rounded-full shadow-lg bg-gray-900 text-white hover:bg-gray-800 p-0 animate-in zoom-in duration-300 delay-100"
+                className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-gray-900 text-white hover:bg-gray-800 p-0 animate-in zoom-in duration-300 delay-100"
               >
-                <Eye className="h-6 w-6" />
+                <Eye className="h-5 w-5 sm:h-6 sm:w-6" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-full">
+            <DialogContent className="w-[70vw] sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-xl">
                   <Eye className="h-5 w-5" />
@@ -537,11 +535,13 @@ export default function CreateResumePage() {
               </DialogHeader>
 
               <div className="mt-4 space-y-4">
-                <div className="border rounded-lg overflow-hidden">
-                  <ResumePreview data={resumeData} format={selectedFormat} />
+                <div className="border rounded-lg overflow-auto custom-scrollbar bg-gray-100 dark:bg-gray-900/50 p-2 sm:p-6 max-h-[60vh]">
+                  <div className="w-[794px] min-h-[1123px] bg-white mx-auto shadow-md relative">
+                    <ResumePreview data={resumeData} format={selectedFormat} />
+                  </div>
                 </div>
 
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 pt-2">
                   <Button
                     onClick={handleDownloadPdf}
                     className="w-full sm:w-auto gap-2"
@@ -551,19 +551,19 @@ export default function CreateResumePage() {
                 </div>
               </div>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
 
           {/* ATS Button */}
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 size="lg"
-                className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 p-0 animate-in zoom-in duration-300"
+                className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 p-0 animate-in zoom-in duration-300"
               >
-                <Sparkles className="h-6 w-6 text-white" />
+                <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] sm:w-full sm:max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-xl">
                   <Sparkles className="h-5 w-5 text-blue-600" />
@@ -577,27 +577,29 @@ export default function CreateResumePage() {
 
               <div className="mt-4">
                 {!atsScore && !isAnalyzing ? (
-                  <div className="text-center py-10 space-y-4">
+                  <div className="text-center py-6 sm:py-10 space-y-4">
                     <div className="bg-blue-50 dark:bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Sparkles className="h-8 w-8 text-blue-600" />
                     </div>
                     <h3 className="text-lg font-semibold">Ready to Analyze?</h3>
-                    <p className="text-muted-foreground max-w-sm mx-auto">
+                    <p className="text-sm sm:text-base text-muted-foreground max-w-sm mx-auto px-4 sm:px-0">
                       Our AI will scan your resume for ATS compatibility,
                       keyword optimization, and content quality.
                     </p>
-                    <Button
-                      onClick={() => analyzeResume(resumeData)}
-                      size="lg"
-                      className="gap-2"
-                    >
-                      <Sparkles className="h-4 w-4" /> Analyze Now
-                    </Button>
+                    <div className="pt-2">
+                      <Button
+                        onClick={() => analyzeResume(resumeData)}
+                        size="lg"
+                        className="gap-2 w-full sm:w-auto"
+                      >
+                        <Sparkles className="h-4 w-4" /> Analyze Now
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    <div className="flex justify-between items-center bg-muted/50 p-3 rounded-lg border">
-                      <span className="text-sm font-medium">
+                    <div className="flex flex-col sm:flex-row justify-between items-center bg-muted/50 p-3 sm:p-4 rounded-lg border gap-3 sm:gap-0">
+                      <span className="text-sm font-medium text-center sm:text-left">
                         Analysis based on current data
                       </span>
                       <Button
@@ -605,6 +607,7 @@ export default function CreateResumePage() {
                         size="sm"
                         onClick={() => analyzeResume(resumeData)}
                         disabled={isAnalyzing}
+                        className="w-full sm:w-auto"
                       >
                         {isAnalyzing ? "Analyzing..." : "Refresh Score"}
                       </Button>
