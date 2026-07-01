@@ -44,7 +44,25 @@ export function ResumeFormatSelector({ selectedFormat, onSelectFormat, data, gri
       name: "Elegant",
       description: "Sophisticated serif typography.",
       component: ElegantFormat
-    }
+    },
+    {
+      id: "classic",
+      name: "Classic",
+      description: "Traditional top-header with clear hierarchy.",
+      component: ClassicFormat
+    },
+    {
+      id: "timeline",
+      name: "Timeline",
+      description: "Creative with accent rail.",
+      component: TimelineFormat
+    },
+    {
+      id: "simple",
+      name: "Simple",
+      description: "Clean, centered, and distraction-free.",
+      component: SimpleFormat
+    },
   ]
 
   return (
@@ -500,6 +518,362 @@ const ElegantFormat = ({ data }) => (
   </div>
 )
 
+const ClassicFormat = ({ data }) => (
+  <div className="h-full w-full bg-white font-serif text-xs leading-normal p-10 text-slate-800">
+    <div className="text-center border-b-2 border-slate-800 pb-4 mb-5">
+      <h1 className="text-3xl font-bold tracking-wide uppercase">
+        {data.personalInfo?.name || "Your Name"}
+      </h1>
+      <p className="text-sm text-slate-600 mt-1">
+        {data.personalInfo?.title || "Job Title"}
+      </p>
+      <div className="text-[10px] text-slate-500 mt-2 space-x-3">
+        <span>{data.personalInfo?.email}</span>
+        <span>·</span>
+        <span>{data.personalInfo?.phone}</span>
+        <span>·</span>
+        <span>{data.personalInfo?.location}</span>
+      </div>
+    </div>
+ 
+    {data.personalInfo?.summary && (
+      <p className="text-[11px] text-slate-700 text-center mb-6 italic px-6">
+        {data.personalInfo.summary}
+      </p>
+    )}
+ 
+    <Section title="Experience" className="mb-5 border-slate-800">
+      {data.experience?.map((exp, i) => (
+        <div key={i} className="mb-3">
+          <div className="flex justify-between">
+            <span className="font-bold">{exp.position}</span>
+            <span className="text-[10px] text-slate-500">
+              {exp.startDate} – {exp.endDate}
+            </span>
+          </div>
+          <div className="text-[10px] italic text-slate-600">{exp.company}</div>
+          <p className="text-[10px] mt-1 text-slate-700">{exp.description}</p>
+        </div>
+      ))}
+    </Section>
+ 
+    <Section title="Projects" className="mb-5 border-slate-800">
+      {data.projects?.map((exp, i) => (
+        <div key={i} className="mb-3">
+          <div className="flex justify-between">
+            <span className="font-bold">{exp.title}</span>
+            <span className="text-[10px] text-slate-500">{exp.duration}</span>
+          </div>
+          <div className="text-[10px] italic text-slate-600">{exp.link}</div>
+          <p className="text-[10px] mt-1 text-slate-700">{exp.description}</p>
+        </div>
+      ))}
+    </Section>
+ 
+    <Section title="Education" className="mb-5 border-slate-800">
+      {data.education?.map((edu, i) => (
+        <div key={i} className="mb-2 flex justify-between">
+          <div>
+            <div className="font-bold">{edu.institution}</div>
+            <div className="text-[10px] text-slate-600">
+              {edu.degree} in {edu.field}
+            </div>
+          </div>
+          <div className="text-[10px] text-slate-500">
+            {edu.startDate} – {edu.endDate}
+          </div>
+        </div>
+      ))}
+    </Section>
+ 
+    <div className="grid grid-cols-2 gap-6">
+      <Section title="Skills" className="border-slate-800">
+        <p className="text-[10px] text-slate-700">
+          {data.skills?.join("  •  ")}
+        </p>
+      </Section>
+      <Section title="Languages" className="border-slate-800">
+        <p className="text-[10px] text-slate-700">
+          {data.languages?.join("  •  ")}
+        </p>
+      </Section>
+    </div>
+  </div>
+);
+
+const SimpleFormat = ({ data }) => (
+  <div className="h-full w-full bg-white font-sans text-xs leading-relaxed p-12 text-neutral-800">
+    <div className="mb-8">
+      <h1 className="text-2xl font-light tracking-tight text-neutral-900">
+        {data.personalInfo?.name || "Your Name"}
+      </h1>
+      <p className="text-sm text-neutral-500 mt-0.5">
+        {data.personalInfo?.title || "Job Title"}
+      </p>
+      <div className="flex gap-4 text-[10px] text-neutral-400 mt-3">
+        <span>{data.personalInfo?.email}</span>
+        <span>{data.personalInfo?.phone}</span>
+        <span>{data.personalInfo?.location}</span>
+      </div>
+      {data.personalInfo?.summary && (
+        <p className="text-[11px] text-neutral-600 mt-4 max-w-lg">
+          {data.personalInfo.summary}
+        </p>
+      )}
+    </div>
+ 
+    <div className="space-y-7">
+      <div>
+        <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
+          Experience
+        </h3>
+        <div className="space-y-4">
+          {data.experience?.map((exp, i) => (
+            <div key={i}>
+              <div className="flex justify-between items-baseline">
+                <span className="font-medium text-neutral-900">{exp.position}</span>
+                <span className="text-[10px] text-neutral-400">
+                  {exp.startDate} — {exp.endDate}
+                </span>
+              </div>
+              <div className="text-[10px] text-neutral-500">{exp.company}</div>
+              <p className="text-[10px] mt-1 text-neutral-600">{exp.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+ 
+      <div>
+        <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
+          Projects
+        </h3>
+        <div className="space-y-4">
+          {data.projects?.map((exp, i) => (
+            <div key={i}>
+              <div className="flex justify-between items-baseline">
+                <span className="font-medium text-neutral-900">{exp.title}</span>
+                <span className="text-[10px] text-neutral-400">{exp.duration}</span>
+              </div>
+              <div className="text-[10px] text-neutral-500">{exp.link}</div>
+              <p className="text-[10px] mt-1 text-neutral-600">{exp.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+ 
+      <div>
+        <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
+          Education
+        </h3>
+        <div className="space-y-2">
+          {data.education?.map((edu, i) => (
+            <div key={i} className="flex justify-between items-baseline">
+              <div>
+                <span className="font-medium text-neutral-900">{edu.institution}</span>
+                <span className="text-[10px] text-neutral-500 ml-2">
+                  {edu.degree} in {edu.field}
+                </span>
+              </div>
+              <span className="text-[10px] text-neutral-400">
+                {edu.startDate} — {edu.endDate}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+ 
+      <div className="flex gap-16">
+        <div>
+          <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-400 mb-2">
+            Skills
+          </h3>
+          <p className="text-[10px] text-neutral-600 max-w-xs">
+            {data.skills?.join(", ")}
+          </p>
+        </div>
+        <div>
+          <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-400 mb-2">
+            Languages
+          </h3>
+          <p className="text-[10px] text-neutral-600">
+            {data.languages?.join(", ")}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+ 
+const TimelineFormat = ({ data }) => (
+  <div className="h-full w-full bg-white font-sans text-xs leading-normal">
+    <div className="flex items-center gap-6 bg-teal-700 text-white p-8">
+      {data.personalInfo?.photo && (
+        <img
+          src={data.personalInfo.photo}
+          className="w-20 h-20 rounded-lg object-cover border-2 border-teal-400"
+        />
+      )}
+      <div>
+        <h1 className="text-3xl font-extrabold tracking-tight">
+          {data.personalInfo?.name || "Your Name"}
+        </h1>
+        <p className="text-sm text-teal-100 font-medium">
+          {data.personalInfo?.title || "Job Title"}
+        </p>
+        <div className="flex gap-3 text-[10px] text-teal-200 mt-2">
+          <span>{data.personalInfo?.email}</span>
+          <span>{data.personalInfo?.phone}</span>
+          <span>{data.personalInfo?.location}</span>
+        </div>
+      </div>
+    </div>
+ 
+    <div className="p-8">
+      {data.personalInfo?.summary && (
+        <p className="text-[11px] text-slate-600 mb-6 border-l-2 border-teal-600 pl-3">
+          {data.personalInfo.summary}
+        </p>
+      )}
+ 
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-2 space-y-6">
+          <div>
+            <h3 className="text-[11px] font-bold uppercase tracking-widest text-teal-700 mb-3">
+              Experience
+            </h3>
+            <div className="relative pl-4 border-l-2 border-teal-200 space-y-4">
+              {data.experience?.map((exp, i) => (
+                <div key={i} className="relative">
+                  <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-teal-600" />
+                  <div className="flex justify-between font-bold text-slate-800">
+                    <span>{exp.position}</span>
+                    <span className="text-slate-400 text-[10px] font-normal">
+                      {exp.startDate} - {exp.endDate}
+                    </span>
+                  </div>
+                  <div className="text-[10px] font-semibold text-teal-700">
+                    {exp.company}
+                  </div>
+                  <p className="text-[10px] mt-1 text-slate-600">{exp.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+ 
+          <div>
+            <h3 className="text-[11px] font-bold uppercase tracking-widest text-teal-700 mb-3">
+              Projects
+            </h3>
+            <div className="relative pl-4 border-l-2 border-teal-200 space-y-4">
+              {data.projects?.map((exp, i) => (
+                <div key={i} className="relative">
+                  <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-teal-600" />
+                  <div className="flex justify-between font-bold text-slate-800">
+                    <span>{exp.title}</span>
+                    <span className="text-slate-400 text-[10px] font-normal">
+                      {exp.duration}
+                    </span>
+                  </div>
+                  <div className="text-[10px] font-semibold text-blue-600">
+                    {exp.link}
+                  </div>
+                  <p className="text-[10px] mt-1 text-slate-600">{exp.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+ 
+        <div className="space-y-6">
+          <Section title="Education" className="border-teal-200 text-teal-700">
+            {data.education?.map((edu, i) => (
+              <div key={i} className="mb-2">
+                <div className="font-bold text-slate-800">{edu.institution}</div>
+                <div className="text-[10px] text-slate-600">
+                  {edu.degree} in {edu.field}
+                </div>
+                <div className="text-[10px] text-slate-400">
+                  {edu.startDate} - {edu.endDate}
+                </div>
+              </div>
+            ))}
+          </Section>
+ 
+          <Section title="Skills" className="border-teal-200 text-teal-700">
+            <div className="flex flex-wrap gap-1">
+              {data.skills?.map((s, i) => (
+                <Badge
+                  key={i}
+                  className="bg-teal-50 text-teal-700 text-[10px] px-1.5 py-0.5"
+                >
+                  {s}
+                </Badge>
+              ))}
+            </div>
+          </Section>
+ 
+          <Section title="Languages" className="border-teal-200 text-teal-700">
+            {data.languages?.map((s, i) => (
+              <div key={i} className="text-[10px] text-slate-600">
+                • {s}
+              </div>
+            ))}
+          </Section>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const sampleData = {
+  personalInfo: {
+    name: "Jordan Avery",
+    title: "Product Designer",
+    email: "jordan@email.com",
+    phone: "(555) 123-4567",
+    location: "Austin, TX",
+    summary:
+      "Product designer with 6 years of experience shipping design systems and 0-to-1 products for B2B SaaS teams.",
+    photo: "",
+  },
+  skills: ["Figma", "Design Systems", "React", "User Research", "Prototyping"],
+  languages: ["English (Native)", "Spanish (Fluent)"],
+  experience: [
+    {
+      position: "Senior Product Designer",
+      company: "Northwind Labs",
+      startDate: "2022",
+      endDate: "Present",
+      description:
+        "Led redesign of core dashboard, improving task completion rate by 34%.",
+    },
+    {
+      position: "Product Designer",
+      company: "Fieldstone Co.",
+      startDate: "2019",
+      endDate: "2022",
+      description: "Built and maintained the company's first design system.",
+    },
+  ],
+  projects: [
+    {
+      title: "Open Source Icon Kit",
+      link: "github.com/jordan/icon-kit",
+      duration: "2023",
+      description: "600+ icon set used by 3k+ developers, MIT licensed.",
+    },
+  ],
+  education: [
+    {
+      institution: "University of Texas at Austin",
+      degree: "B.F.A.",
+      field: "Design",
+      startDate: "2015",
+      endDate: "2019",
+    },
+  ],
+};
+ 
 // Helper Components
 const Section = ({ title, className, children }) => (
     <div className="space-y-2">
