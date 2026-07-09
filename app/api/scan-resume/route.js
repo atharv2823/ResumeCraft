@@ -48,13 +48,13 @@ export async function POST(request) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+      }
     });
 
     const prompt = `
-Analyze this resume file for ATS compatibility and provide detailed feedback.
-
-The file is base64 encoded with MIME type: ${mimeType}
-Base64 content: ${base64}
+Analyze the attached resume file for ATS compatibility and provide detailed feedback.
 
 Please provide:
 1. An overall ATS compatibility score (0-100)
@@ -89,7 +89,15 @@ Format the response as a JSON object with the following structure:
     const maxAttempts = 3;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        result = await model.generateContent(prompt);
+        result = await model.generateContent([
+          {
+            inlineData: {
+              data: base64,
+              mimeType: mimeType
+            }
+          },
+          prompt
+        ]);
         break;
       } catch (err) {
         if (attempt === maxAttempts) throw err;
@@ -100,13 +108,7 @@ Format the response as a JSON object with the following structure:
     const response = await result.response;
     const text = response.text();
 
-    // Clean the response text
-    const jsonString = text
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const analysisResult = JSON.parse(jsonString);
+    const analysisResult = JSON.parse(text);
     return NextResponse.json(analysisResult);
   } catch (error) {
     console.error("Resume scan error:", error);
