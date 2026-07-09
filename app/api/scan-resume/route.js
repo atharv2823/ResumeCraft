@@ -47,7 +47,7 @@ export async function POST(request) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
     });
 
     const prompt = `
@@ -85,7 +85,18 @@ Format the response as a JSON object with the following structure:
 }
 `;
 
-    const result = await model.generateContent(prompt);
+    let result;
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        result = await model.generateContent(prompt);
+        break;
+      } catch (err) {
+        if (attempt === maxAttempts) throw err;
+        console.warn(`Gemini API attempt ${attempt} failed. Retrying in 2s...`, err.message);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }
     const response = await result.response;
     const text = response.text();
 
